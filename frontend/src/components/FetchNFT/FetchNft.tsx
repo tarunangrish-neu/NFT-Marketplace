@@ -21,15 +21,6 @@ const FetchNft = ({ id }: FetchNftPropTypes) => {
     const [sellingPrice, setSellingPrice] = useState("0");
     const [isReselling, setIsReselling] = useState(false);
 
-    const {
-        data: nft,
-        isLoading,
-        isSuccess,
-        refetch,
-    } = useContractRead(contract, "getItemForTokenId", [id]);
-
-    const { data: listingPrice } = useContractRead(contract, "getListingPrice");
-
     useEffect(() => {
         if (isSuccess) {
             setFetchingData(true);
