@@ -138,51 +138,64 @@ export default function NFTPage() {
   };
 
   return (
-  <div>
+  <div style={{ "min-height": "100vh", display: "flex" }}>
   <Navbar />
   {/* Render NFT data here */}
-  <div>
+  <div className="flex ml-auto mr-auto mt-40">
     <img
       src={data.image}
       alt=""
+      className="h-3/4 w-2/4 border-xl-5 drop-shadow-2xl"
     />
-    <div>
-      <div>Name: {data.name}</div>
-      <div>Description: {data.description}</div>
-      <div>
+    <div className="text-xl mt-40 ml-20 space-y-8 text-white rounded-lg">
+      <div className="drop-shadow-xl font-bold text-2xl">Name: {data.name}</div>
+      <div className="drop-shadow-xl font-bold">Description: {data.description}</div>
+      <div className="drop-shadow-xl font-bold">
         Price: <span className="">{data.price + " ETH/ERC20 Token"}</span>
       </div>
       <div>
-        Owner: <span>{data.owner}</span>
+        Owner: <span className="text-sm">{data.owner}</span>
       </div>
       <div>
-        Seller: <span>{data.seller}</span>
+        Seller: <span className="text-sm">{data.seller}</span>
       </div>
       <div>
         {!isOwner &&
         currAddress !== data.owner &&
         currAddress !== data.seller ? (
           <div>
-            <select>
+            <select
+              className="payment-method-selector bg-white-500 text-black font-bold py-2 px-4 rounded text-md shadow-xl"
+              style={{ marginRight: "8px" }}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
               <option value="ETH">Pay with ETH</option>
               <option value="ERC20">Pay with ERC20 Token</option>
             </select>
             {paymentMethod === "ETH" ? (
-              <button>
+              <button
+                className="enableEthereumButton bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-md shadow-xl"
+                style={{ marginTop: "8px" }}
+                onClick={() => buyNFT(tokenId)}
+              >
                 Buy this NFT with ETH
               </button>
             ) : (
-              <button>
+              <button
+                className="enableEthereumButton bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-md shadow-xl"
+                style={{ marginTop: "8px" }}
+                onClick={() => buyNFTWithERC20(tokenId)}
+              >
                 Buy this NFT with ERC20
               </button>
             )}
           </div>
         ) : (
-          <div>
+          <div className="text-emerald-700">
             You are the owner of this NFT
           </div>
         )}
-        <div>{message}</div>
+        <div className="text-green text-center mt-3">{message}</div>
       </div>
     </div>
   </div>
