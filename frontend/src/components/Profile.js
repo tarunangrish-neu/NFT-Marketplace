@@ -75,17 +75,17 @@ export default function Profile() {
   }, []);
 
   return (
-    <div>
+    <div className="profileClass" style={{ "min-height": "100vh" }}>
       <Navbar />
-      <div>
-        <div>
-          <h2>Your NFTs</h2>
-          <div>
+      <div className="profileClass">
+        <div className="flex flex-col text-center items-center mt-20 text-3xl text-white">
+          <h2 className="font-bold">Your NFTs</h2>
+          <div className="flex justify-center flex-wrap max-w-screen-xl">
             {data.map((value, index) => {
               return <NFTTile data={value} key={index}></NFTTile>;
             })}
           </div>
-          <div>
+          <div className="mt-10 text-2xl">
             {data.length === 0
               ? "Oops, No NFT data to display (Are you logged in?)"
               : ""}
