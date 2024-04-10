@@ -75,9 +75,23 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="profileClass" style={{ "min-height": "100vh" }}>
+    <div>
       <Navbar />
-      
+      <div>
+        <div>
+          <h2>Your NFTs</h2>
+          <div>
+            {data.map((value, index) => {
+              return <NFTTile data={value} key={index}></NFTTile>;
+            })}
+          </div>
+          <div>
+            {data.length === 0
+              ? "Oops, No NFT data to display (Are you logged in?)"
+              : ""}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
