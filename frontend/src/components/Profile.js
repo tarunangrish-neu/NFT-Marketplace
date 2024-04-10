@@ -18,6 +18,13 @@ export default function Profile() {
     const addr = await signer.getAddress();
     updateAddress(addr); // Update address state
 
+    const contract = new ethers.Contract(
+      MarketplaceJSON.address,
+      MarketplaceJSON.abi,
+      signer
+    );
+    const transaction = await contract.getMyNFTs();
+
     const items = await Promise.all(
       transaction.map(async (i) => {
         const tokenURI = await contract.tokenURI(i.tokenId);
