@@ -50,6 +50,37 @@ export default function SellNFT() {
       console.log("Error during file upload", e);
     }
   }
+  //This function uploads the metadata to IPFS
+  async function uploadMetadataToIPFS() {
+    const { name, description, price } = formParams;
+    //Make sure that none of the fields are empty
+    if (!name || !description || !price || !fileURL) {
+      updateMessage("Please fill all the fields!");
+      return -1;
+    }
+
+    const nftJSON = {
+      name,
+      description,
+      price,
+      image: fileURL,
+    };
+
+    try {
+      //upload the metadata JSON to IPFS
+      const response = await uploadJSONToIPFS(nftJSON);
+      if (response.success === true) {
+        console.log("Uploaded JSON to Pinata: ", response);
+        return response.pinataURL;
+      }
+    } catch (e) {
+      console.log("error uploading JSON metadata:", e);
+    }
+  }
+
+  async function listNFT(e) {}
+
+  //console.log("Working", process.env);
 
   return (
     <div className="">
