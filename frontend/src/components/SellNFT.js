@@ -7,6 +7,50 @@ import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 export default function SellNFT() {
+  const [formParams, updateFormParams] = useState({
+    name: "",
+    description: "",
+    price: "",
+  });
+  const [fileURL, setFileURL] = useState(null);
+  const ethers = require("ethers");
+  const [message, updateMessage] = useState("");
+  const navigate = useNavigate();
+
+  async function disableButton() {
+    const listButton = document.getElementById("list-button");
+    listButton.disabled = true;
+    listButton.style.backgroundColor = "grey";
+    listButton.style.opacity = 0.3;
+  }
+
+  async function enableButton() {
+    const listButton = document.getElementById("list-button");
+    listButton.disabled = false;
+    listButton.style.backgroundColor = "#000000";
+    listButton.style.opacity = 1;
+  }
+
+  //This function uploads the NFT image to IPFS
+  async function OnChangeFile(e) {
+    var file = e.target.files[0];
+    //check for file extension
+    try {
+      //upload the file to IPFS
+      disableButton();
+      updateMessage("Uploading image");
+      const response = await uploadFileToIPFS(file);
+      if (response.success === true) {
+        enableButton();
+        updateMessage("");
+        console.log("Uploaded image to Pinata: ", response.pinataURL);
+        setFileURL(response.pinataURL);
+      }
+    } catch (e) {
+      console.log("Error during file upload", e);
+    }
+  }
+
   return (
     <div className="">
       <Navbar />
