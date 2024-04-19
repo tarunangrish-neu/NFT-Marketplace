@@ -50,6 +50,7 @@ export default function SellNFT() {
       console.log("Error during file upload", e);
     }
   }
+
   //This function uploads the metadata to IPFS
   async function uploadMetadataToIPFS() {
     const { name, description, price } = formParams;
@@ -78,13 +79,53 @@ export default function SellNFT() {
     }
   }
 
-  async function listNFT(e) {}
+  async function listNFT(e) {
+    e.preventDefault();
+
+    //Upload data to IPFS
+    try {
+      const metadataURL = await uploadMetadataToIPFS();
+      if (metadataURL === -1) return;
+      //After adding your Hardhat network to your metamask, this code will get providers and signers
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      disableButton();
+      updateMessage(
+        "Uploading NFT"
+      );
+
+      //Pull the deployed contract instance
+      let contract = new ethers.Contract(
+        Marketplace.address,
+        Marketplace.abi,
+        signer
+      );
+
+      //massage the params to be sent to the create NFT request
+      const price = ethers.utils.parseUnits(formParams.price, "ether");
+      let listingPrice = await contract.getListPrice();
+      listingPrice = listingPrice.toString();
+
+      //actually create the NFT
+      let transaction = await contract.createToken(metadataURL, price, {
+        value: listingPrice,
+      });
+      await transaction.wait();
+
+      alert("Successfully listed your NFT on the Marketplace!");
+      enableButton();
+      updateMessage("");
+      updateFormParams({ name: "", description: "", price: "" });
+      navigate("/");
+    } catch (e) {
+      alert("Upload error" + e);
+    }
+  }
 
   //console.log("Working", process.env);
-
   return (
     <div className="">
-      <Navbar />
+      <Navbar/>
       <div className=" mt-20 flex flex-col place-items-center" id="nftForm">
         <form className="shadow-lg border-black border-2 w-2/5 text-center rounded-lg px-8 pt-4 pb-8 mb-4 mt-4">
           <h3 className="text-center text-2xl font-bold text-black mb-8">
@@ -153,11 +194,7 @@ export default function SellNFT() {
             >
               Upload Image
             </label>
-            <input
-              type={"file"}
-              accept=".jpg, jpeg, .png"
-              onChange={OnChangeFile}
-            ></input>
+            <input type={"file"} accept=".jpg, jpeg, .png" onChange={OnChangeFile}></input>
           </div>
           <br></br>
           <div className="text-white-600 text-xl text-center">{message}</div>
